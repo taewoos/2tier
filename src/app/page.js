@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
@@ -14,8 +12,10 @@ export default function Home() {
   const handleSearch = async () => {
     setLoading(true);
     setError('');
+    // 환경 변수 사용 또는 하드코딩된 IP 주소 사용
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://211.210.203.164:8000';
     try {
-      const result = await axios.post('http://211.210.203.164:8000/activities/', {
+      const result = await axios.post(`${apiUrl}/activities/`, {
         activity_name: activityName,
         region: region
       });
