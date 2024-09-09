@@ -15,7 +15,7 @@ export default function Home() {
   const handleSearch = async () => {
     setLoading(true);
     setError('');
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://211.210.203.164:8000';
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://211.210.203.164:8000';
     try {
       const result = await axios.post(`${apiUrl}/activities/`, {
         activity_name: activityName,
