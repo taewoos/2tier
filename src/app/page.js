@@ -15,7 +15,7 @@ export default function Home() {
     setLoading(true);
     setError('');
     try {
-      const result = await axios.post('http://localhost:8000/activities/', {
+      const result = await axios.post('http://211.210.203.164:8000/activities/', {
         activity_name: activityName,
         region: region
       });
