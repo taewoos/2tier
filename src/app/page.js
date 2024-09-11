@@ -15,7 +15,7 @@ export default function Home() {
   const handleSearch = async () => {
     setLoading(true);
     setError('');
-    const apiUrl = process.env.REACT_APP_API_URL || 'https://211.210.203.164:8000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://211.210.203.164:8000';
     try {
       const result = await axios.post(`${apiUrl}/activities/`, {
         activity_name: activityName,
@@ -23,7 +23,8 @@ export default function Home() {
       });
       setResponse(result.data);
     } catch (err) {
-      setError('Failed to fetch data. Please try again.');
+      const message = err.response?.data?.detail || 'Failed to fetch data. Please try again.';
+      setError(message);
       console.error(err);
     }
     setLoading(false);
@@ -56,6 +57,34 @@ export default function Home() {
         <div className={styles.results}>
           <h2>Results:</h2>
           <pre className={styles.pre}>{JSON.stringify(response, null, 2)}</pre>
+
+          {/* 메인 제품 정보 표시 */}
+          <div className={styles.product}>
+            <h3>Main Product</h3>
+            <p><strong>Product:</strong> {response.Product}</p>
+            <p><strong>Effective Area:</strong> {response['Effective Area']}</p>
+            <p><strong>Collection:</strong> {response.Collection}</p>
+            <p><strong>Korean Greenhouse Gas Law kgCO2eq(GWP):</strong> {response['Korean Greenhouse Gas Law kgCO2eq(GWP)']}</p>
+            <p><strong>AR6:</strong> {response.AR6}</p>
+            <p><strong>AR5:</strong> {response.AR5}</p>
+            <p><strong>Data Source:</strong> {response['Data Source']}</p>
+            <p><strong>Similarity:</strong> {response.Similarity}</p>
+          </div>
+
+          {/* 대체 제품 정보 표시 */}
+          {response['Alternative Product'] && (
+            <div className={styles.alternativeProduct}>
+              <h3>Alternative Product</h3>
+              <p><strong>Product:</strong> {response['Alternative Product'].Product}</p>
+              <p><strong>Effective Area:</strong> {response['Alternative Product']['Effective Area']}</p>
+              <p><strong>Collection:</strong> {response['Alternative Product'].Collection}</p>
+              <p><strong>Korean Greenhouse Gas Law kgCO2eq(GWP):</strong> {response['Alternative Product']['Korean Greenhouse Gas Law kgCO2eq(GWP)']}</p>
+              <p><strong>AR6:</strong> {response['Alternative Product'].AR6}</p>
+              <p><strong>AR5:</strong> {response['Alternative Product'].AR5}</p>
+              <p><strong>Data Source:</strong> {response['Alternative Product']['Data Source']}</p>
+              <p><strong>Similarity:</strong> {response['Alternative Product'].Similarity}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
