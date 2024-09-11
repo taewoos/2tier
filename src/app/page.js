@@ -15,8 +15,7 @@ export default function Home() {
   const handleSearch = async () => {
     setLoading(true);
     setError('');
-    setResponse(null); // Reset response on new search
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://211.210.203.164:8000';
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://211.210.203.164:8000';
     try {
       const result = await axios.post(`${apiUrl}/activities/`, {
         activity_name: activityName,
@@ -24,26 +23,11 @@ export default function Home() {
       });
       setResponse(result.data);
     } catch (err) {
-      const message = err.response?.data?.detail || 'Failed to fetch data. Please try again.';
-      setError(message);
+      setError('Failed to fetch data. Please try again.');
       console.error(err);
     }
     setLoading(false);
   };
-
-  const renderProductDetails = (product, title) => (
-    <div className={styles.product}>
-      <h3>{title}</h3>
-      <p><strong>Product:</strong> {product.Product || 'N/A'}</p>
-      <p><strong>Effective Area:</strong> {product['Effective Area'] || 'N/A'}</p>
-      <p><strong>Collection:</strong> {product.Collection || 'N/A'}</p>
-      <p><strong>Korean Greenhouse Gas Law kgCO2eq(GWP):</strong> {product['Korean Greenhouse Gas Law kgCO2eq(GWP)'] || 'N/A'}</p>
-      <p><strong>AR6:</strong> {product.AR6 || 'N/A'}</p>
-      <p><strong>AR5:</strong> {product.AR5 || 'N/A'}</p>
-      <p><strong>Data Source:</strong> {product['Data Source'] || 'N/A'}</p>
-      <p><strong>Similarity:</strong> {product.Similarity || 'N/A'}</p>
-    </div>
-  );
 
   return (
     <div className={styles.container}>
@@ -68,17 +52,11 @@ export default function Home() {
         </button>
       </div>
       {error && <div className={styles.error}>{error}</div>}
-      {loading && <div className={styles.loading}>Loading...</div>}
-      {response ? (
+      {response && (
         <div className={styles.results}>
           <h2>Results:</h2>
-          {renderProductDetails(response['Primary Result'], 'Main Product')}
-          {response['Lowest AR6 Product'] 
-            ? renderProductDetails(response['Lowest AR6 Product'], 'Lowest AR6 Product') 
-            : <div className={styles.noAltProduct}>No lower AR6 product found.</div>}
+          <pre className={styles.pre}>{JSON.stringify(response, null, 2)}</pre>
         </div>
-      ) : (
-        !loading && !error && <div className={styles.noResults}>No matching products found.</div>
       )}
     </div>
   );
