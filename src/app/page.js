@@ -15,6 +15,7 @@ export default function Home() {
   const handleSearch = async () => {
     setLoading(true);
     setError('');
+    setResponse(null); // 새로운 검색 시 이전 응답을 초기화
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://211.210.203.164:8000';
     try {
       const result = await axios.post(`${apiUrl}/activities/`, {
@@ -33,14 +34,14 @@ export default function Home() {
   const renderProductDetails = (product, title) => (
     <div className={styles.product}>
       <h3>{title}</h3>
-      <p><strong>Product:</strong> {product.Product}</p>
-      <p><strong>Effective Area:</strong> {product['Effective Area']}</p>
-      <p><strong>Collection:</strong> {product.Collection}</p>
-      <p><strong>Korean Greenhouse Gas Law kgCO2eq(GWP):</strong> {product['Korean Greenhouse Gas Law kgCO2eq(GWP)']}</p>
-      <p><strong>AR6:</strong> {product.AR6}</p>
-      <p><strong>AR5:</strong> {product.AR5}</p>
-      <p><strong>Data Source:</strong> {product['Data Source']}</p>
-      <p><strong>Similarity:</strong> {product.Similarity}</p>
+      <p><strong>Product:</strong> {product.Product || 'N/A'}</p>
+      <p><strong>Effective Area:</strong> {product['Effective Area'] || 'N/A'}</p>
+      <p><strong>Collection:</strong> {product.Collection || 'N/A'}</p>
+      <p><strong>Korean Greenhouse Gas Law kgCO2eq(GWP):</strong> {product['Korean Greenhouse Gas Law kgCO2eq(GWP)'] || 'N/A'}</p>
+      <p><strong>AR6:</strong> {product.AR6 || 'N/A'}</p>
+      <p><strong>AR5:</strong> {product.AR5 || 'N/A'}</p>
+      <p><strong>Data Source:</strong> {product['Data Source'] || 'N/A'}</p>
+      <p><strong>Similarity:</strong> {product.Similarity || 'N/A'}</p>
     </div>
   );
 
@@ -67,14 +68,17 @@ export default function Home() {
         </button>
       </div>
       {error && <div className={styles.error}>{error}</div>}
+      {loading && <div className={styles.loading}>Loading...</div>}
       {response ? (
         <div className={styles.results}>
           <h2>Results:</h2>
           {renderProductDetails(response, 'Main Product')}
-          {response['Alternative Product'] && renderProductDetails(response['Alternative Product'], 'Alternative Product')}
+          {response['Alternative Product'] 
+            ? renderProductDetails(response['Alternative Product'], 'Alternative Product') 
+            : <div className={styles.noAltProduct}>대체 제품이 없습니다.</div>}
         </div>
       ) : (
-        !loading && <div className={styles.noResults}>매칭되는 제품이 없습니다.</div>
+        !loading && !error && <div className={styles.noResults}>매칭되는 제품이 없습니다.</div>
       )}
     </div>
   );
