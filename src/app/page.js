@@ -15,7 +15,7 @@ export default function Home() {
   const handleSearch = async () => {
     setLoading(true);
     setError('');
-    setResponse(null); // 새로운 검색 시 이전 응답을 초기화
+    setResponse(null); // Reset response on new search
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://211.210.203.164:8000';
     try {
       const result = await axios.post(`${apiUrl}/activities/`, {
@@ -72,13 +72,13 @@ export default function Home() {
       {response ? (
         <div className={styles.results}>
           <h2>Results:</h2>
-          {renderProductDetails(response, 'Main Product')}
-          {response['Alternative Product'] 
-            ? renderProductDetails(response['Alternative Product'], 'Alternative Product') 
-            : <div className={styles.noAltProduct}>대체 제품이 없습니다.</div>}
+          {renderProductDetails(response['Primary Result'], 'Main Product')}
+          {response['Lowest AR6 Product'] 
+            ? renderProductDetails(response['Lowest AR6 Product'], 'Lowest AR6 Product') 
+            : <div className={styles.noAltProduct}>No lower AR6 product found.</div>}
         </div>
       ) : (
-        !loading && !error && <div className={styles.noResults}>매칭되는 제품이 없습니다.</div>
+        !loading && !error && <div className={styles.noResults}>No matching products found.</div>
       )}
     </div>
   );
